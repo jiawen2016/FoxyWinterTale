@@ -26,7 +26,7 @@ public:
     float w;
     float h;
     bool jump=false;
-    bool moveRight=false;
+    bool moveRight=true;
     bool moveLeft=false;
     bool rotate=false;
 };

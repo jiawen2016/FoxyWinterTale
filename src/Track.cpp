@@ -15,7 +15,7 @@ void Track::draw(){
 }
 void Track::setImg(string str){
     img.loadImage(str);
-    img.resize(ofGetWindowWidth()/7,ofGetWindowWidth()/7);
+    img.resize(ofGetWindowWidth()/10,ofGetWindowWidth()/10);
     w=img.getWidth();
     h=img.getHeight();
 }

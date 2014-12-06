@@ -21,22 +21,25 @@ void ofApp::setup(){
     ground=ofGetWindowHeight()*0.7f;
     keyUpPressed=0.f;
     foxy.setPos(ofGetWindowWidth()*0.05, ground);
-    vYo=pow((ofGetHeight()*0.3*2*g), 0.5);
-    vXo=2.0f;
+    vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
+    vXo=ofGetWindowWidth()/120;
     tracks.push_back(piano);
     tracks.push_back(strings);
     tracks.push_back(percussion);
     tracks.push_back(guitar);
+    drum.loadSound("rhythm.mp3");
+    drum.play();
     for (int i=0;i<tracks.size();i++) {
-        tracks[i].setPos(ofGetWindowWidth()/5*(i+1),ofGetWindowHeight()*0.7);
+        tracks[i].setPos((ofGetWindowWidth()/5)*(i+1),ofGetWindowHeight()*0.1*(4-i%3));
         std::stringstream ss;
-        ss << i+1<<".png";
+        ss << (i%4)+1<<".png";
         tracks[i].setImg(ss.str());
         std::stringstream ss2;
-        ss2 << i+1<<".mp3";
+        ss2 << (i%4)+1<<".mp3";
         tracks[i].setTrack(ss2.str());
-        tracks[i].track.play();
+        //tracks[i].track.play();
     }
+    g_time2=0;
 }
 
 //--------------------------------------------------------------
@@ -62,7 +65,7 @@ void ofApp::update(){
             foxy.y=ground;
             foxy.jump=false;
             g_time=0;
-            vYo=pow((ofGetHeight()*0.3*2*g), 0.5);
+            vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
             a=g;
         }
         if(yPos<0.f){
@@ -77,16 +80,26 @@ void ofApp::update(){
         }
     }
     if(foxy.moveRight){
-        foxy.x+=vXo*t;
-        g_time++;
+        xPos=vXo*g_time2;
+        if(xPos>ofGetWindowWidth()){
+            g_time2=1;
+            xPos=vXo*g_time2;
+        }
+        else{
+            foxy.x=xPos;
+        }
+        g_time2++;
+
     }
+    /*
     if(foxy.moveLeft){
-        foxy.x-=vXo*t;
+        foxy.x=vXo*t;
         g_time++;
-    }
+    }*/
     if(foxy.rotate){
         foxy.img.rotate90(1);
     }
+    /*
     if(foxy.x <= 0||foxy.x >= ofGetWindowWidth()-foxy.w)
     {
         foxy.x = ofGetWindowWidth()*0.05;
@@ -99,6 +112,8 @@ void ofApp::update(){
     {
         foxy.y = 0;
     }
+     */
+   
     
 }
 
@@ -126,12 +141,14 @@ void ofApp::keyPressed(int key){
         a-=keyUpPressed*0.2f;
         keyUpPressed++;
     }
+    /*
     if(key==OF_KEY_RIGHT){
         foxy.moveRight=true;
     }
     if(key==OF_KEY_LEFT){
         foxy.moveLeft=true;
     }
+     */
     if(key==OF_KEY_DOWN){
         foxy.rotate=true;
     }
@@ -182,12 +199,14 @@ void ofApp::keyReleased(int key){
         keyUpPressed=0.0f;
         a=g;
     }
+    /*
     if(key==OF_KEY_RIGHT){
         foxy.moveRight=false;
     }
     if(key==OF_KEY_LEFT){
         foxy.moveLeft=false;
     }
+     */
     if(key==OF_KEY_DOWN){
         foxy.rotate=false;
         foxy.setImg("foxy.png");

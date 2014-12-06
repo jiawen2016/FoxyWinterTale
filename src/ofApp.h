@@ -22,6 +22,7 @@ public:
     void dragEvent(ofDragInfo dragInfo);
     void gotMessage(ofMessage msg);
     int g_time;
+    int g_time2;
     float g;
     float a;
     Foxy foxy;
@@ -46,6 +47,7 @@ public:
     bool mFullscreen;
     bool mMouseDown;
     ofVec2f mMousePos;
+    ofSoundPlayer drum;
 
     
 		
