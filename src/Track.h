@@ -26,6 +26,9 @@ public:
     float y;
     float w;
     float h;
+    
+    //Sina Dec 6 2014
+    bool flag = false;
 };
 
 #endif /* defined(__FoxyWinterTale__Track__) */

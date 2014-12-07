@@ -19,33 +19,39 @@ void ofApp::setup(){
     g=9.81;
     a=g;
     ground=ofGetWindowHeight()*0.75f;
-    keyUpPressed=0.f;
     foxy.setPos(ofGetWindowWidth()*0.05, ground);
     vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
     vXo=ofGetWindowWidth()/135.f;
+    vy=vYo;
     /*
     tracks.push_back(piano);
     tracks.push_back(strings);
     tracks.push_back(percussion);
     tracks.push_back(guitar);
      */
-    drum.loadSound("rhythm.mp3");
+    drum.loadSound(".mp3");
     drum.play();
-    drum.setVolume(0.f);
+    drum.setVolume(1.f);
     Track m;
+  //Sina Dec 6 2014////////
+    x_space = 0.08;
+    
     for (int i=0;i<4;i++){
         tracks.push_back(m);
     }
-    for (int i=0;i<tracks.size();i++) {
-        tracks[i].setPos((ofGetWindowWidth()/4)*(i+.5),ofGetWindowHeight()*0.6);
-        std::stringstream ss;
-        ss <<4<<".png";
-        tracks[i].setImg(ss.str());
-        //std::stringstream ss2;
-       // ss2 << (i%4)+1<<".mp3";
-        //tracks[i].setTrack(ss2.str());
-        //tracks[i].track.play();
+    
+    dist[0] = 0;
+    for (int i=1;i<tracks.size() + 1;i++) {
+        dist[i]= dist[i-1] + rymth[i-1];
     }
+    
+    for (int i=0;i<tracks.size();i++) {
+        tracks[i].setPos((ofGetWindowWidth()*x_space)*(dist[i]+2),ofGetWindowHeight()*0.25*pitchs[i]);
+        std::stringstream ss;
+        ss <<pitchs[i]<<".png";
+        tracks[i].setImg(ss.str());
+    }
+    //Sina Dec 6 2014////////
     g_time2=0;
 
 }
@@ -63,22 +69,28 @@ void ofApp::update(){
     else t=(float)g_time/2;
     if(foxy.jump){
         //cout<<foxy.y<<endl;
-        vy=vYo-a*t;
-        yt =vYo*t-0.5*a*t*t;
+        vy=vy-a;
+        yt +=vy-0.5*a;
+        //yt+=vy*0.5;
         if(vYo>0)
             yPos=ground-yt;
         else
-            yPos=0.0-yt;
+            yPos=ceiling-yt;
         if(yPos>ground){
             foxy.jump=false;
             g_time=0;
             vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
+            vy=vYo;
+            yt=0;
             foxy.y = ground;
-            //a=g;
+            a=g;
         }
         if(yPos<0.f){
             foxy.y=0.f;
+            vy=0;
             vYo=0;
+            ceiling=0.f;
+            yt=0;
             a=g;
             g_time=0;
         }
@@ -118,26 +130,23 @@ void ofApp::update(){
     {
         foxy.y = 0;
     }
-    /*
+    
     for (int i=0;i<tracks.size();i++) {
         //printf("%d %d %d ")
-        if(foxy.x>=tracks[0].x&&foxy.x<=tracks[0].x+tracks[0].w){
-            cout<<foxy.x<<" "<<foxy.y<<endl;
-            
-            if(foxy.y>tracks[0].y+tracks[0].h)
-                cout<<foxy.x<<endl;
+        if(foxy.x<=tracks[i].x+tracks[i].w + 50 &&foxy.x>=tracks[i].x+tracks[i].w && tracks[i].flag == false){
+           // cout<<foxy.x<<" "<<foxy.y<<endl;
+            drum.setVolume(0.f);
+            cout << "miss"<<endl;
         }
-     */
-       // else cout<<"."<<endl;
-           //drum.setVolume(0.f);
-        /*
+        
         if(abs(foxy.x + foxy.w/2- tracks[i].x - tracks[i].w/2) < 50 && abs(foxy.y + foxy.h/2- tracks[i].y - tracks[i].h/2) < 50  ) {
            tracks[i].y = -10000;
-            foxy.success=true;
+            tracks[i].flag = 1;
+            //foxy.success=true;
            drum.setVolume(1.0);
         }
-         */
-    //}
+        
+    }
     
 }
 
@@ -162,9 +171,7 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key==OF_KEY_UP){
         foxy.jump=true;
-        a=g-keyUpPressed*0.8f;
-        keyUpPressed++;
-        //cout<<foxy.x<<endl;
+        a-=6.5f;
         
     }
     if(key==OF_KEY_RIGHT){
@@ -229,8 +236,7 @@ void ofApp::keyPressed(int key){
 //--------------------------------------------------------------
 void ofApp::keyReleased(int key){
     if(key==OF_KEY_UP){
-        keyUpPressed=0.0f;
-        //a=g;
+        a=g;
     }
     if(key==OF_KEY_RIGHT){
         //foxy.moveLeft=true;

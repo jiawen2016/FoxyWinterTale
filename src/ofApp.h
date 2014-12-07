@@ -36,7 +36,7 @@ public:
     float vy;
     float t;
     float ground;
-    float keyUpPressed;
+    float ceiling;
     vector<Track> tracks;
     Track piano;
     Track strings;
@@ -50,6 +50,11 @@ public:
     ofSoundPlayer drum;
     int scale=10;
 
+    //Sina Dec 6 2014////////
+    int pitchs[4] = {3,3,2,3};
+    int rymth[4] = {2,2,2,2};
+    int dist[5];
+    float x_space;
     
 		
 };
