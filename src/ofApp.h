@@ -48,6 +48,7 @@ public:
     bool mMouseDown;
     ofVec2f mMousePos;
     ofSoundPlayer drum;
+    int scale=10;
 
     
 		

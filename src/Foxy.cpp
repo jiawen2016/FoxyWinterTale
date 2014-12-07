@@ -13,7 +13,7 @@ void Foxy::draw(){
 }
 void Foxy::setImg(string str){
     img.loadImage(str);
-    img.resize(ofGetWindowWidth()/10,ofGetWindowWidth()/10);
+    img.resize(ofGetWindowWidth()/scale,ofGetWindowWidth()/scale);
     w=img.getWidth();
     h=img.getHeight();
 }

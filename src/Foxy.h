@@ -26,9 +26,11 @@ public:
     float w;
     float h;
     bool jump=false;
-    bool moveRight=true;
-    bool moveLeft=false;
+    bool moveRight=false;
+    bool moveLeft=true;
     bool rotate=false;
+    int scale=10;
+    bool success;
 };
 
 #endif /* defined(__FoxyWinterTale__Foxy__) */

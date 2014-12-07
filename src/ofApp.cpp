@@ -18,28 +18,36 @@ void ofApp::setup(){
     foxy.setImg("foxy.png");
     g=9.81;
     a=g;
-    ground=ofGetWindowHeight()*0.7f;
+    ground=ofGetWindowHeight()*0.75f;
     keyUpPressed=0.f;
     foxy.setPos(ofGetWindowWidth()*0.05, ground);
     vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
-    vXo=ofGetWindowWidth()/120;
+    vXo=ofGetWindowWidth()/135.f;
+    /*
     tracks.push_back(piano);
     tracks.push_back(strings);
     tracks.push_back(percussion);
     tracks.push_back(guitar);
+     */
     drum.loadSound("rhythm.mp3");
     drum.play();
+    drum.setVolume(0.f);
+    Track m;
+    for (int i=0;i<4;i++){
+        tracks.push_back(m);
+    }
     for (int i=0;i<tracks.size();i++) {
-        tracks[i].setPos((ofGetWindowWidth()/5)*(i+1),ofGetWindowHeight()*0.1*(4-i%3));
+        tracks[i].setPos((ofGetWindowWidth()/4)*(i+.5),ofGetWindowHeight()*0.6);
         std::stringstream ss;
-        ss << (i%4)+1<<".png";
+        ss <<4<<".png";
         tracks[i].setImg(ss.str());
-        std::stringstream ss2;
-        ss2 << (i%4)+1<<".mp3";
-        tracks[i].setTrack(ss2.str());
+        //std::stringstream ss2;
+       // ss2 << (i%4)+1<<".mp3";
+        //tracks[i].setTrack(ss2.str());
         //tracks[i].track.play();
     }
     g_time2=0;
+
 }
 
 //--------------------------------------------------------------
@@ -50,7 +58,7 @@ void ofApp::update(){
     }
     mParticleController->update ();
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
-    foxy.img.resize(ofGetWindowWidth()/7,ofGetWindowWidth()/7);
+    foxy.img.resize(ofGetWindowWidth()/scale,ofGetWindowWidth()/scale);
     if(g_time==0) t=0;
     else t=(float)g_time/2;
     if(foxy.jump){
@@ -62,11 +70,11 @@ void ofApp::update(){
         else
             yPos=0.0-yt;
         if(yPos>ground){
-            foxy.y=ground;
             foxy.jump=false;
             g_time=0;
             vYo=pow((ofGetHeight()*0.1*2*g), 0.5);
-            a=g;
+            foxy.y = ground;
+            //a=g;
         }
         if(yPos<0.f){
             foxy.y=0.f;
@@ -79,7 +87,6 @@ void ofApp::update(){
             g_time++;
         }
     }
-    if(foxy.moveRight){
         xPos=vXo*g_time2;
         if(xPos>ofGetWindowWidth()){
             g_time2=1;
@@ -90,7 +97,6 @@ void ofApp::update(){
         }
         g_time2++;
 
-    }
     /*
     if(foxy.moveLeft){
         foxy.x=vXo*t;
@@ -103,7 +109,7 @@ void ofApp::update(){
     if(foxy.x <= 0||foxy.x >= ofGetWindowWidth()-foxy.w)
     {
         foxy.x = ofGetWindowWidth()*0.05;
-    }
+    }*/
     if(foxy.y > ground)
     {
         foxy.y = ground;
@@ -112,8 +118,26 @@ void ofApp::update(){
     {
         foxy.y = 0;
     }
+    /*
+    for (int i=0;i<tracks.size();i++) {
+        //printf("%d %d %d ")
+        if(foxy.x>=tracks[0].x&&foxy.x<=tracks[0].x+tracks[0].w){
+            cout<<foxy.x<<" "<<foxy.y<<endl;
+            
+            if(foxy.y>tracks[0].y+tracks[0].h)
+                cout<<foxy.x<<endl;
+        }
      */
-   
+       // else cout<<"."<<endl;
+           //drum.setVolume(0.f);
+        /*
+        if(abs(foxy.x + foxy.w/2- tracks[i].x - tracks[i].w/2) < 50 && abs(foxy.y + foxy.h/2- tracks[i].y - tracks[i].h/2) < 50  ) {
+           tracks[i].y = -10000;
+            foxy.success=true;
+           drum.setVolume(1.0);
+        }
+         */
+    //}
     
 }
 
@@ -138,17 +162,26 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key==OF_KEY_UP){
         foxy.jump=true;
-        a-=keyUpPressed*0.2f;
+        a-=keyUpPressed*0.1f;
         keyUpPressed++;
+        //cout<<foxy.x<<endl;
+        
     }
-    /*
     if(key==OF_KEY_RIGHT){
-        foxy.moveRight=true;
+        if(!foxy.moveLeft&&foxy.moveRight){
+            foxy.img.mirror(false, true);
+            foxy.moveLeft=true;
+            foxy.moveRight=false;
+        }
     }
     if(key==OF_KEY_LEFT){
-        foxy.moveLeft=true;
+        if(foxy.moveLeft&&!foxy.moveRight){
+            foxy.img.mirror(false, true);
+            foxy.moveRight=true;
+            foxy.moveLeft=false;
+        }
+
     }
-     */
     if(key==OF_KEY_DOWN){
         foxy.rotate=true;
     }
@@ -199,14 +232,15 @@ void ofApp::keyReleased(int key){
         keyUpPressed=0.0f;
         a=g;
     }
-    /*
     if(key==OF_KEY_RIGHT){
-        foxy.moveRight=false;
+        //foxy.moveLeft=true;
+        //foxy.img.mirror(false, true);
+       
     }
     if(key==OF_KEY_LEFT){
-        foxy.moveLeft=false;
+        //foxy.moveRight=true;
     }
-     */
+    
     if(key==OF_KEY_DOWN){
         foxy.rotate=false;
         foxy.setImg("foxy.png");
