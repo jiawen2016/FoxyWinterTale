@@ -162,7 +162,7 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key==OF_KEY_UP){
         foxy.jump=true;
-        a-=keyUpPressed*0.1f;
+        a=g-keyUpPressed*0.8f;
         keyUpPressed++;
         //cout<<foxy.x<<endl;
         
@@ -230,7 +230,7 @@ void ofApp::keyPressed(int key){
 void ofApp::keyReleased(int key){
     if(key==OF_KEY_UP){
         keyUpPressed=0.0f;
-        a=g;
+        //a=g;
     }
     if(key==OF_KEY_RIGHT){
         //foxy.moveLeft=true;
