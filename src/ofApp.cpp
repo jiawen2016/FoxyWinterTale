@@ -9,7 +9,7 @@ void ofApp::setup(){
     ofSetVerticalSync ( true );
     ofBackground ( 0,0,0 );
     mTextureImage.loadImage("6.png");
-    mParticleController = new ParticleController ( mTextureImage.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 3, 10.0, 20.0,90, 60 );
+    mParticleController = new ParticleController ( mTextureImage.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 3, 20.0, 20.0,90, 60 );
 
     ofSetFrameRate ( 30 );
     ofSetWindowTitle("FoxyTale");
@@ -20,7 +20,7 @@ void ofApp::setup(){
     a=g;
     ground=ofGetWindowHeight()*0.8f;
     foxy.setPos(ofGetWindowWidth()*0.05, ground);
-    vYo=pow((ofGetHeight()*0.3*2*g), 0.5);
+    vYo=pow((ofGetHeight()*0.2*2*g), 0.5);
     vXo=ofGetWindowWidth()/135.f;
     vy=vYo;
     /*
@@ -48,7 +48,10 @@ void ofApp::setup(){
     }
     
     for (int i=0;i<tracks.size();i++) {
-        tracks[i].setPos((ofGetWindowWidth()*x_space)*(dist[i]) + 300,ofGetWindowHeight()-ofGetWindowHeight()*(1.f/8.f)*pitchs[i]);
+        if(pitchs[i]==0)
+            tracks[i].setPos(0.f,-1000);
+        else
+            tracks[i].setPos((ofGetWindowWidth()*x_space)*(dist[i]) + 300,ofGetWindowHeight()*0.98f-ofGetWindowHeight()*0.98f*(1.f/8.0)*pitchs[i]);
         std::stringstream ss;
         ss <<pitchs[i]<<".png";
         tracks[i].setImg(ss.str(),pitchs[i]);
@@ -60,9 +63,13 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    if ( mMouseDown )
+    if(snowT>150)
+        snow=false;
+    if (snow)
     {
         mParticleController->mPosition = mMousePos;
+        snowT++;
+        
     }
     mParticleController->update ();
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
@@ -147,6 +154,7 @@ void ofApp::update(){
            // cout<<foxy.x<<" "<<foxy.y<<endl;
             drum.setVolume(0.f);
             cout << "miss"<<endl;
+            //snow=false;
         }
         
         if(abs(foxy.x + foxy.w/2- tracks[i].x - tracks[i].w/2) < 50 && abs(foxy.y + foxy.h/2- tracks[i].y - tracks[i].h/2) < 50  ) {
@@ -167,12 +175,22 @@ void ofApp::update(){
                 }
             }
             if(tracks[i].step==8){
-                if(pressed<10){
+                if(pressed<20){
                     cout<<"Not long enough"<<endl;
                     break;
                 }
+                else{
+                    snow=true;
+                    mTextureImage.loadImage("gifts.png");
+                    mMousePos = ofVec2f (tracks[i].x,0);
+                }
             }
-           tracks[i].y = -10000;
+            if(tracks[i].step==6){
+                snow=true;
+                mTextureImage.loadImage("6.png");
+                mMousePos = ofVec2f (tracks[i].x,0);
+            }
+           tracks[i].y = -1000;
             tracks[i].flag = 1;
             //foxy.success=true;
            drum.setVolume(1.0);
@@ -192,10 +210,11 @@ void ofApp::draw(){
         tracks[i].draw();
     }
     foxy.draw();
-    mParticleController->draw ();
+    if(snow)
+        mParticleController->draw ();
     //ofSetColor ( 0xffffff);
-    ofDrawBitmapString ( "FPS: " + ofToString ( ofGetFrameRate() ), 10, 20 );
-    ofDrawBitmapString ( "Particles: " + ofToString ( mParticleController->getParticleCount() ), 10, 30 );
+    //ofDrawBitmapString ( "FPS: " + ofToString ( ofGetFrameRate() ), 10, 20 );
+    //ofDrawBitmapString ( "Particles: " + ofToString ( mParticleController->getParticleCount() ), 10, 30 );
     //ofSetColor ( 0x0080FF );
     //ofDrawBitmapString ( "Press/drag mouse to spawn particles", ofGetWidth() - (35*8) - 10, 20 );
     
@@ -206,7 +225,7 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key==OF_KEY_UP){
         foxy.jump=true;
-        a-=6.5f;
+        a-=7.0f;
         pressed++;
         
     }
@@ -295,25 +314,25 @@ void ofApp::keyReleased(int key){
 
 //--------------------------------------------------------------
 void ofApp::mouseMoved(int x, int y ){
-     mMousePos = ofVec2f ( x, y );
+     //mMousePos = ofVec2f ( x, y );
     
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseDragged(int x, int y, int button){
-     mMousePos = ofVec2f ( x, y );
+     //mMousePos = ofVec2f ( x, y );
 }
 
 //--------------------------------------------------------------
 void ofApp::mousePressed(int x, int y, int button){
-    mMouseDown = true;
-    mMousePos = ofVec2f ( x, y );
+    //mMouseDown = true;
+    //mMousePos = ofVec2f ( x, y );
     
 }
 
 //--------------------------------------------------------------
 void ofApp::mouseReleased(int x, int y, int button){
-    mMouseDown = false;
+    //mMouseDown = false;
     
 }
 

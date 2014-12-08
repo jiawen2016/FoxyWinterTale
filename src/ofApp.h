@@ -47,6 +47,8 @@ public:
     ofImage mTextureImage;
     bool mFullscreen;
     bool mMouseDown;
+    bool snow;
+    int snowT;
     ofVec2f mMousePos;
     ofSoundPlayer drum;
     ofSoundPlayer accompany;

@@ -16,11 +16,13 @@ void Track::draw(){
 void Track::setImg(string str,int i){
     img.loadImage(str);
     if(i==2)
-        img.resize(ofGetWindowWidth()/10,ofGetWindowWidth()/10);
+        img.resize(ofGetWindowWidth()/9,ofGetWindowWidth()/9);
+    else if(i==1)
+        img.resize(ofGetWindowWidth()/11.5,ofGetWindowWidth()/11.5);
     else if(i==8)
         img.resize(ofGetWindowWidth()/4,ofGetWindowWidth()/8);
     else
-        img.resize(ofGetWindowWidth()/14,ofGetWindowWidth()/14);
+        img.resize(ofGetWindowWidth()/12,ofGetWindowWidth()/12);
     w=img.getWidth();
     h=img.getHeight();
     step=i;

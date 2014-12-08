@@ -7,6 +7,7 @@
 //
 
 #include "particleController.h"
+#include "ofApp.h"
 ParticleController::ParticleController () {
 }
 
@@ -40,7 +41,6 @@ void ParticleController::update () {
             p = mParticles.erase ( p );
             //}
             //return;
-            
             
         } else {
             p->update ();

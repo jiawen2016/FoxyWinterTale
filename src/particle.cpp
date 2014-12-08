@@ -49,7 +49,7 @@ void Particle::setup () {
     mSize = 5.0;
     
     mAge = 0;
-    mLifetime = 120;
+    mLifetime = 200;
     mDead = false;
     mFalling=false;
 }
@@ -59,7 +59,7 @@ void Particle::update () {
     mAge++;
     
     if(mFalling){
-        mLifetime=60;
+        mLifetime=200;
         
     }
     
