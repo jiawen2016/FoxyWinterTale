@@ -16,7 +16,7 @@ class Track{
 public:
     // Methods
     void draw();
-    void setImg(string str);
+    void setImg(string str,int i);
     void setPos(float xPos,float yPos);
     void setTrack(string str);
     // Properties
@@ -26,6 +26,7 @@ public:
     float y;
     float w;
     float h;
+    int step;
     
     //Sina Dec 6 2014
     bool flag = false;

@@ -30,7 +30,8 @@ public:
     bool moveLeft=true;
     bool rotate=false;
     int scale=10;
-    bool success;
+    bool rotated=false;
+    bool rocked=false;
 };
 
 #endif /* defined(__FoxyWinterTale__Foxy__) */

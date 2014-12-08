@@ -37,6 +37,7 @@ public:
     float t;
     float ground;
     float ceiling;
+    int pressed;
     vector<Track> tracks;
     Track piano;
     Track strings;
@@ -48,13 +49,16 @@ public:
     bool mMouseDown;
     ofVec2f mMousePos;
     ofSoundPlayer drum;
+    ofSoundPlayer accompany;
     int scale=10;
 
     //Sina Dec 6 2014////////
-    int pitchs[4] = {3,3,2,3};
-    int rymth[4] = {2,2,2,2};
-    int dist[5];
+    int pitch_num = 9;
+    int pitchs[9] = {0,1,2,3,4,5,6,7,8};
+    int rymth[9] = {1,1,1,1,1,1,1,1,1};
+    int dist[10];
     float x_space;
+    float x_speed;
     
 		
 };
