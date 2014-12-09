@@ -9,9 +9,9 @@ void ofApp::setup(){
     ofSetVerticalSync ( true );
     ofBackground ( 0,0,0 );
     mTextureImage.loadImage("8.png");
-    mTextureImage2.loadImage("26.png");
+    mTextureImage2.loadImage("178.png");
     mParticleController = new ParticleController ( mTextureImage.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 3, 20.0, 20.0,90, 60 );
-    mParticleController2 = new ParticleController ( mTextureImage2.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 2, 30.0, 50.0,90, 60 );
+    mParticleController2 = new ParticleController ( mTextureImage2.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 2, 30.0, 30.0,90, 60 );
 
     ofSetFrameRate ( 30.0 );
     ofSetWindowTitle("FoxyTale");
@@ -217,8 +217,8 @@ void ofApp::draw(){
     score=success*10-miss*5;
     ofSetColor ( 0xffffff);
     ofDrawBitmapString ( "Number of Misses: " + ofToString (miss), 10, 20 );
-    ofDrawBitmapString ( "Number of Successes: " + ofToString (success), 10, 30 );
-    //ofDrawBitmapString ( "Score: "+ ofToString(score),10,20);
+    ofDrawBitmapString ( "Number of Hits: " + ofToString (success), 10, 30 );
+    ofDrawBitmapString ( "Score: "+ ofToString(score),10,40);
     ofSetColor ( 0x0080FF );
     
     
