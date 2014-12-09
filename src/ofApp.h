@@ -39,28 +39,96 @@ public:
     float ceiling;
     int pressed;
     vector<Track> tracks;
-    Track piano;
-    Track strings;
-    Track percussion;
-    Track guitar;
     ParticleController * mParticleController;
+    ParticleController * mParticleController2;
     ofImage mTextureImage;
+    ofImage mTextureImage2;
     bool mFullscreen;
     bool mMouseDown;
-    bool snow;
-    int snowT;
-    ofVec2f mMousePos;
+    bool snow=false;
+    bool gifts=false;
+    ofVec2f mSnowPos;
+    ofVec2f mGiftPos;
     ofSoundPlayer drum;
     ofSoundPlayer accompany;
     int scale=10;
 
     //Sina Dec 6 2014////////
-    int pitch_num = 9;
-    int pitchs[9] = {0,1,2,3,4,5,6,7,8};
-    int rymth[9] = {1,1,1,1,1,1,1,1,1};
-    int dist[10];
+    /*
+    int pitch_num = 68;
+    int pitchs[68] = {
+        
+        
+                     1,1,1,2,
+                     2,3,8,6,
+                     1,1,1,2,
+                     2,8,8,4,
+                     6,6,6,5,
+                     7,7,6,5,
+                     6,6,6,5,
+                     7,7,8,4,
+                        1,1,1,2,
+                        2,3,8,6,
+                        1,1,1,2,
+                        2,8,8,4,
+                        6,6,6,5,
+                        7,7,6,5,
+                        6,6,6,5,
+                        7,7,8,4,
+                        7,7,8,4,
+    };
+    int rymth[68] = {2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2,2};
+    int dist[69];
+     */
+    
+     int pitch_num = 73;
+     int pitchs[73] = {
+     
+     0,0,0,0,0,0,
+     1,1,1,2,
+     2,3,8,6,
+     1,1,1,2,
+     2,8,8,4,
+     6,6,6,6,
+     7,7,6,5,
+     6,6,6,6,
+     7,7,8,4,
+     1,1,1,2,
+     2,3,8,6,
+     1,1,1,2,
+     2,8,8,4,
+     6,6,6,6,
+     7,7,6,5,
+     6,6,6,6,
+     7,7,8,4,
+     7,7,9,
+     };
+    int rymth[73] = {2,2,2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,2,2,
+                     2,2,4,
+                    };
+    int dist[74];
+
     float x_space;
     float x_speed;
-    
-		
+    bool started=false;
+    bool startedMoving=false;
+    int miss=0;
+    int success=0;
+    float score=0.f;
 };

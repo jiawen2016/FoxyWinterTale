@@ -27,6 +27,7 @@ public:
     float w;
     float h;
     int step;
+    bool ifMiss=true;
     
     //Sina Dec 6 2014
     bool flag = false;

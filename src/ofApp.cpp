@@ -8,21 +8,24 @@ void ofApp::setup(){
     mMouseDown = false;
     ofSetVerticalSync ( true );
     ofBackground ( 0,0,0 );
-    mTextureImage.loadImage("6.png");
+    mTextureImage.loadImage("8.png");
+    mTextureImage2.loadImage("26.png");
     mParticleController = new ParticleController ( mTextureImage.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 3, 20.0, 20.0,90, 60 );
+    mParticleController2 = new ParticleController ( mTextureImage2.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 2, 30.0, 50.0,90, 60 );
 
-    ofSetFrameRate ( 30 );
+    ofSetFrameRate ( 30.0 );
     ofSetWindowTitle("FoxyTale");
     bg.loadImage("WinterMoon.jpg");
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
     foxy.setImg("foxy.png");
-    g=9.81;
+    g=9.81f;
     a=g;
     ground=ofGetWindowHeight()*0.8f;
-    foxy.setPos(ofGetWindowWidth()*0.05, ground);
+    foxy.setPos(0.0, ground);
     vYo=pow((ofGetHeight()*0.2*2*g), 0.5);
-    vXo=ofGetWindowWidth()/135.f;
+    vXo=ofGetWindowWidth()/2850.0;
     vy=vYo;
+    x_speed = ofGetWindowWidth()/170.3;
     /*
     tracks.push_back(piano);
     tracks.push_back(strings);
@@ -31,30 +34,32 @@ void ofApp::setup(){
      */
     drum.loadSound("jinglebell.mp3");
     accompany.loadSound("rhythm.mp3");
-    drum.play();
-    accompany.play();
+    //drum.play();
+    
     drum.setVolume(1.f);
     Track m;
   //Sina Dec 6 2014////////
-    x_space = 0.5f;
+    x_space = 0.1065f;
     
     for (int i=0;i<pitch_num;i++){
         tracks.push_back(m);
     }
     
-    dist[0] = 0;
+    dist[0] = 0.f;
     for (int i=1;i<tracks.size() + 1;i++) {
         dist[i]= dist[i-1] + rymth[i-1];
     }
     
     for (int i=0;i<tracks.size();i++) {
-        if(pitchs[i]==0)
-            tracks[i].setPos(0.f,-1000);
-        else
-            tracks[i].setPos((ofGetWindowWidth()*x_space)*(dist[i]) + 300,ofGetWindowHeight()*0.98f-ofGetWindowHeight()*0.98f*(1.f/8.0)*pitchs[i]);
-        std::stringstream ss;
-        ss <<pitchs[i]<<".png";
-        tracks[i].setImg(ss.str(),pitchs[i]);
+        tracks[i].setPos((ofGetWindowWidth()*x_space)*(dist[i]), ofGetWindowHeight()*0.98-ofGetWindowHeight()*0.98*(1.f/8.f)*pitchs[i]);
+            std::stringstream ss;
+            ss <<pitchs[i]<<".png";
+            tracks[i].setImg(ss.str(),pitchs[i]);
+            if(pitchs[i]==0)
+                tracks[i].y=-1000;
+            else if(pitchs[i]==9)
+                tracks[i].y=0.f;
+        
     }
     //Sina Dec 6 2014////////
     g_time2=0;
@@ -63,15 +68,29 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    if(snowT>150)
-        snow=false;
+    if(started){
+        accompany.play();
+        drum.play();
+        started=false;
+    }
+    if(!startedMoving)
+        return;
+    
     if (snow)
     {
-        mParticleController->mPosition = mMousePos;
-        snowT++;
-        
+        mParticleController->mPosition = mSnowPos;
+        cout<<"Where are my snow?"<<endl;
+        mParticleController->update ();
     }
-    mParticleController->update ();
+    if (gifts)
+    {
+        mParticleController2->mPosition = mGiftPos;
+        cout<<"Where are my gifts?"<<endl;
+        mParticleController2->update ();
+      
+    }
+    
+    
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
     foxy.img.resize(ofGetWindowWidth()/scale,ofGetWindowWidth()/scale);
     if(g_time==0) t=0;
@@ -108,7 +127,7 @@ void ofApp::update(){
             g_time++;
         }
     }
-         xPos=vXo*g_time2*0.1;
+         xPos=vXo*g_time2;
         
        if(xPos>ofGetWindowWidth()){
             g_time2=1;
@@ -117,24 +136,18 @@ void ofApp::update(){
         else{
             foxy.x=xPos;
         }
-      
-    
         g_time2++;
-
-    /*
-    if(foxy.moveLeft){
-        foxy.x=vXo*t;
-        g_time++;
-    }*/
+    
+    
     if(foxy.rotate){
         foxy.img.rotate90(1);
         foxy.rotated=true;
     }
-    /*
-    if(foxy.x <= 0||foxy.x >= ofGetWindowWidth()-foxy.w)
+    
+    if(foxy.x >= ofGetWindowWidth()-foxy.w)
     {
-        foxy.x = ofGetWindowWidth()*0.05;
-    }*/
+        foxy.x = ofGetWindowWidth()-foxy.w;
+    }
     if(foxy.y > ground)
     {
         foxy.y = ground;
@@ -143,61 +156,48 @@ void ofApp::update(){
     {
         foxy.y = 0;
     }
-    x_speed = 10;
+   
     for (int i=0;i<tracks.size();i++) {
-       
+      
         tracks[i].x = tracks[i].x - x_speed;
-        //printf("%d %d %d ")
-        if(tracks[i].step>0){
+        
+        if(tracks[i].step>0&&tracks[i].step<9){
+            if(tracks[i].x<foxy.x-50&&tracks[i].y>-1000&&tracks[i].ifMiss){
+                miss++;
+                tracks[i].ifMiss=false;
+            }
            
-        if(foxy.x<=tracks[i].x+tracks[i].w + 50 &&foxy.x>=tracks[i].x+tracks[i].w && tracks[i].flag == false){
-           // cout<<foxy.x<<" "<<foxy.y<<endl;
-            drum.setVolume(0.f);
-            cout << "miss"<<endl;
-            //snow=false;
-        }
+            if(foxy.x<=tracks[i].x+tracks[i].w + 50 &&foxy.x>=tracks[i].x+tracks[i].w && tracks[i].flag == false)
+                drum.setVolume(0.f);
+    
         
-        if(abs(foxy.x + foxy.w/2- tracks[i].x - tracks[i].w/2) < 50 && abs(foxy.y + foxy.h/2- tracks[i].y - tracks[i].h/2) < 50  ) {
-            if(tracks[i].step==1){
-                if(!foxy.rotated){
-                    cout<<"Did not rotate"<<endl;
-                    break;
-                }
-                else{
-                    cout<<"Yes"<<endl;
-                }
-                    
-            }
-            if(tracks[i].step==2){
-                if(!foxy.rocked){
-                    cout<<"Did not rocke"<<endl;
-                    break;
-                }
-            }
-            if(tracks[i].step==8){
-                if(pressed<20){
-                    cout<<"Not long enough"<<endl;
-                    break;
-                }
-                else{
-                    snow=true;
-                    mTextureImage.loadImage("gifts.png");
-                    mMousePos = ofVec2f (tracks[i].x,0);
+            if(abs(foxy.x + foxy.w/2- tracks[i].x - tracks[i].w/2) < 50 && abs(foxy.y + foxy.h/2- tracks[i].y - tracks[i].h/2) < 50 ) {
+            
+                if((tracks[i].step==1&&foxy.rotated)||(tracks[i].step==2&&foxy.rocked)||tracks[i].step>2){
+            
+                        if(tracks[i].step==8){
+                            snow=true;
+                            mSnowPos = ofVec2f (tracks[i].x,0);
+                        }
+               
+
+                        tracks[i].y = -1000;
+                        tracks[i].flag = 1;
+                        drum.setVolume(1.0);
+                        success++;
                 }
             }
-            if(tracks[i].step==6){
-                snow=true;
-                mTextureImage.loadImage("6.png");
-                mMousePos = ofVec2f (tracks[i].x,0);
-            }
-           tracks[i].y = -1000;
-            tracks[i].flag = 1;
-            //foxy.success=true;
-           drum.setVolume(1.0);
-        }
-        }
         
+        }
+        if(tracks[i].step==9){
+            mGiftPos = ofVec2f (tracks[i].x,tracks[i].y+tracks[i].h-10);
+            if(foxy.x>=tracks[i].x&&foxy.x<=tracks[i].x+foxy.w){
+                gifts=true;
+                snow=false;
+            }
+        }
     }
+    
     foxy.rotated=false;
     foxy.rocked=false;
     
@@ -212,11 +212,16 @@ void ofApp::draw(){
     foxy.draw();
     if(snow)
         mParticleController->draw ();
-    //ofSetColor ( 0xffffff);
-    //ofDrawBitmapString ( "FPS: " + ofToString ( ofGetFrameRate() ), 10, 20 );
-    //ofDrawBitmapString ( "Particles: " + ofToString ( mParticleController->getParticleCount() ), 10, 30 );
-    //ofSetColor ( 0x0080FF );
-    //ofDrawBitmapString ( "Press/drag mouse to spawn particles", ofGetWidth() - (35*8) - 10, 20 );
+    if(gifts)
+        mParticleController2->draw ();
+    score=success*10-miss*5;
+    ofSetColor ( 0xffffff);
+    ofDrawBitmapString ( "Number of Misses: " + ofToString (miss), 10, 20 );
+    ofDrawBitmapString ( "Number of Successes: " + ofToString (success), 10, 30 );
+    //ofDrawBitmapString ( "Score: "+ ofToString(score),10,20);
+    ofSetColor ( 0x0080FF );
+    
+    
     
 
 }
@@ -225,7 +230,7 @@ void ofApp::draw(){
 void ofApp::keyPressed(int key){
     if(key==OF_KEY_UP){
         foxy.jump=true;
-        a-=7.0f;
+        a-=10.0f;
         pressed++;
         
     }
@@ -255,35 +260,10 @@ void ofApp::keyPressed(int key){
               ofSetFullscreen ( mFullscreen );
               break;
           case '1':
-              mParticleController->falling=true;
+              started=true;
+              startedMoving=true;
               break;
-
-          case '2':
-              if(piano.track.getVolume()==0)
-                  piano.track.setVolume(1.0);
-              else
-                  piano.track.setVolume(0);
-              break;
-        case '3':
-              if(strings.track.getVolume()==0)
-                  strings.track.setVolume(1.0);
-              else
-                  strings.track.setVolume(0);
-              break;
-          case '4':
-              if(percussion.track.getVolume()==0)
-                  percussion.track.setVolume(1.0);
-              else
-                  percussion.track.setVolume(0);
-              break;
-          case '5':
-              if(guitar.track.getVolume()==0)
-                  guitar.track.setVolume(1.0);
-              else
-                  guitar.track.setVolume(0);
-    
-              break;
-      }
+               }
 
     
     
@@ -327,6 +307,8 @@ void ofApp::mouseDragged(int x, int y, int button){
 void ofApp::mousePressed(int x, int y, int button){
     //mMouseDown = true;
     //mMousePos = ofVec2f ( x, y );
+    started=true;
+    startedMoving=true;
     
 }
 
