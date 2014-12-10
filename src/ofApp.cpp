@@ -9,7 +9,7 @@ void ofApp::setup(){
     ofSetVerticalSync ( true );
     ofBackground ( 0,0,0 );
     mTextureImage.loadImage("8.png");
-    mTextureImage2.loadImage("178.png");
+    mTextureImage2.loadImage("gifts.png");
     mParticleController = new ParticleController ( mTextureImage.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 3, 20.0, 20.0,90, 60 );
     mParticleController2 = new ParticleController ( mTextureImage2.getTextureReference(), ofVec2f ( ofGetWidth()-100, ofGetHeight() - 20 ), 2, 30.0, 30.0,90, 60 );
 
@@ -17,6 +17,13 @@ void ofApp::setup(){
     ofSetWindowTitle("FoxyTale");
     bg.loadImage("WinterMoon.jpg");
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    cover.loadImage("cover.png");
+    cover.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    instruction.loadImage("instruction.png");
+    instruction.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    credits.loadImage("Credits.png");
+    credits.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    
     foxy.setImg("foxy.png");
     g=9.81f;
     a=g;
@@ -25,7 +32,7 @@ void ofApp::setup(){
     vYo=pow((ofGetHeight()*0.2*2*g), 0.5);
     vXo=ofGetWindowWidth()/2850.0;
     vy=vYo;
-    x_speed = ofGetWindowWidth()/170.3;
+    x_speed = ofGetWindowWidth()/172.3;
     /*
     tracks.push_back(piano);
     tracks.push_back(strings);
@@ -68,30 +75,33 @@ void ofApp::setup(){
 
 //--------------------------------------------------------------
 void ofApp::update(){
-    if(started){
-        accompany.play();
-        drum.play();
-        started=false;
+    if(instructed){
+        if(started){
+            accompany.play();
+            drum.play();
+            started=false;
+        }
+        if(!startedMoving)
+            return;
     }
-    if(!startedMoving)
+    else
         return;
-    
     if (snow)
     {
         mParticleController->mPosition = mSnowPos;
-        cout<<"Where are my snow?"<<endl;
         mParticleController->update ();
     }
     if (gifts)
     {
         mParticleController2->mPosition = mGiftPos;
-        cout<<"Where are my gifts?"<<endl;
         mParticleController2->update ();
       
     }
     
     
     bg.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    cover.resize(ofGetWindowWidth(),ofGetWindowHeight());
+    instruction.resize(ofGetWindowWidth(),ofGetWindowHeight());
     foxy.img.resize(ofGetWindowWidth()/scale,ofGetWindowWidth()/scale);
     if(g_time==0) t=0;
     else t=(float)g_time/2;
@@ -130,7 +140,7 @@ void ofApp::update(){
          xPos=vXo*g_time2;
         
        if(xPos>ofGetWindowWidth()){
-            g_time2=1;
+            g_time2=0;
             xPos=vXo*g_time2;
         }
         else{
@@ -200,11 +210,23 @@ void ofApp::update(){
     
     foxy.rotated=false;
     foxy.rocked=false;
+    if(tracks[tracks.size()-1].x+tracks[tracks.size()-1].w<0.f)
+        stopped=true;
+        
     
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
+    if(stopped){
+        credits.draw(0, 0);
+        return;
+    }
+    cover.draw(0, 0);
+    if(entered){
+        instruction.draw(0, 0);
+    }
+    if(instructed){
     bg.draw(0,0);
     for (int i=0;i<tracks.size();i++) {
         tracks[i].draw();
@@ -220,6 +242,7 @@ void ofApp::draw(){
     ofDrawBitmapString ( "Number of Hits: " + ofToString (success), 10, 30 );
     ofDrawBitmapString ( "Score: "+ ofToString(score),10,40);
     ofSetColor ( 0x0080FF );
+    }
     
     
     
@@ -253,6 +276,10 @@ void ofApp::keyPressed(int key){
     if(key==OF_KEY_DOWN){
         foxy.rotate=true;
     }
+    if(key==OF_KEY_RETURN){
+        entered=true;
+        
+    }
       switch (key){
           case 'f':
           case 'F':
@@ -260,6 +287,8 @@ void ofApp::keyPressed(int key){
               ofSetFullscreen ( mFullscreen );
               break;
           case '1':
+              instructed=true;
+              entered=false;
               started=true;
               startedMoving=true;
               break;

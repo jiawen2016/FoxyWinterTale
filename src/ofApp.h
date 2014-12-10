@@ -27,6 +27,12 @@ public:
     float a;
     Foxy foxy;
     ofImage bg;
+    ofImage cover;
+    ofImage instruction;
+    ofImage credits;
+    bool entered=false;
+    bool instructed=false;
+    bool stopped=false;
     float vYo;
     float vXo;
     float yPos;
